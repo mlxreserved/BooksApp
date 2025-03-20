@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">BooksApp</string>
+    <string name="default_description">Нет описания</string>
+    <string name="default_authors">Нет автора</string>
+    <string name="default_publishedDate">Нет даты публикации</string>
+    <string name="default_title">Нет названия</string>
+    <string name="thumbnail_description">Обложка книги</string>
+    <string name="search_placeholder">Поиск</string>
+    <string name="search_idle">Введите название книги, которую ищете </string>
+    <string name="search_error">Ошибка выполнения запроса, попробуйте повторить</string>
+    <string name="search_empty">По вашему запросу ничего не найдено</string>
+    <string name="retry_text">Попробовать еще</string>
+    <string name="favourite_title">Избранное</string>
+    <string name="favourite_empty">У вас нет избранной литературы</string>
+    <string name="book_details_error">Не удалось загрузить информацию о книге</string>
+    <string name="description">Описание</string>
+</resources>
