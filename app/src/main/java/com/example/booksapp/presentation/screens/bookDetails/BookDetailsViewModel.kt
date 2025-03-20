@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +25,7 @@ class BookDetailsViewModel @Inject constructor(
     private val insertFavouriteBookUseCase: InsertFavouriteBookUseCase,
     private val deleteFavouriteBookUseCase: DeleteFavouriteBookUseCase,
     private val getBookByIdUseCase: GetBookByIdUseCase
-): ViewModel() {
+) : ViewModel() {
 
     private val _bookState = MutableStateFlow<BookDetailsState>(BookDetailsState.Loading)
     val bookState = _bookState.asStateFlow()
@@ -49,19 +50,20 @@ class BookDetailsViewModel @Inject constructor(
 
     fun loadBook(bookId: String) {
         _bookState.update { BookDetailsState.Loading }
-        try {
-            viewModelScope.launch {
-                val response = getBookByIdUseCase(bookId) ?: throw Exception()
-                _bookState.update { BookDetailsState.Success(response) }
+        viewModelScope.launch {
+            try {
+                val response = getBookByIdUseCase(bookId)
+                _bookState.update { BookDetailsState.Success(response ?: throw Exception()) }
+            } catch (e: Exception) {
+                _bookState.update { BookDetailsState.Error("${e.message}") }
             }
-        } catch (e: Exception) {
-            _bookState.update { BookDetailsState.Error("${e.message}") }
         }
+
     }
 
     fun onFavouriteButtonClicked(book: Book) {
         viewModelScope.launch {
-            if(_isFavourite.value) {
+            if (_isFavourite.value) {
                 val success = deleteBookFromFavourite(book)
                 _snackbarState.update {
                     if (success) {
@@ -73,7 +75,7 @@ class BookDetailsViewModel @Inject constructor(
             } else {
                 val success = addBookToFavourite(book)
                 _snackbarState.update {
-                    if(success) {
+                    if (success) {
                         SnackbarMessage.SuccessAdd
                     } else {
                         SnackbarMessage.ErrorAdd
